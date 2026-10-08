@@ -22,8 +22,8 @@ export class BaseComponent implements OnInit, OnDestroy {
   protected isCancellable: boolean;
   protected isCancelled = false;
 
-  private readonly requests: Subject<number>[] = new Array(this.DEFAULT_IMAGE_COUNT);
-  private readonly cache: SafeUrl[] = new Array(this.DEFAULT_IMAGE_COUNT);
+  private requests: Subject<number>[] = new Array(this.DEFAULT_IMAGE_COUNT);
+  private cache: SafeUrl[] = new Array(this.DEFAULT_IMAGE_COUNT);
   private imageService: ImageService = inject(ImageService);
 
   constructor(@Inject('DISPLAY_ORDER') displayOrder: 0 | 1,
@@ -40,7 +40,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
   private showRandomImages() {
     for (let idx = 0; idx < this.DEFAULT_IMAGE_COUNT; idx++) {
-      this.requests[idx] = new ReplaySubject<number>();
+      this.requests[idx] = new ReplaySubject<number>(1);
       this.requests[idx].subscribe((val: number) => console.log('cache image', val));
       this.parseRandomImage(idx);
     }
@@ -51,7 +51,11 @@ export class BaseComponent implements OnInit, OnDestroy {
         this.images[idx] = this.cache[idx];
         this.received[idx] = true;
       },
-      complete: () => this.isCancelled = true
+      complete: () => {
+        if (this.isCancellable) {
+          this.isCancelled = true;
+        }
+      }
     }
 
     if (this.displayOrder === BaseComponent.DISPLAY_IN_ORDER) {
@@ -61,13 +65,13 @@ export class BaseComponent implements OnInit, OnDestroy {
     }
   }
 
-  // NOTE delay even numbered image parsing to help simulate parallel caching and in-order image rendering
+  // NOTE delay even numbered image parsing to assist simulate parallel caching and in-order image rendering
   private parseRandomImage(idx: number) {
     console.log('fetch image', idx);
     this.imageService.fetchRandomImage().pipe(delay(idx % 2 === 0 ? 2000 : 0)).subscribe({
       next: (blob: Blob) => {
         if (this.requests[idx].observed) {
-          let reader = new FileReader();
+          const reader = new FileReader();
           reader.readAsDataURL(blob);
           reader.onload = data => {
             this.cache[idx] = data.target?.result || this.MISSING;

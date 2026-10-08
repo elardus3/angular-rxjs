@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
   templateUrl: './question2.component.html',
   styleUrl: './question2.component.css',
 })
-export class Question2Component {}
+export class Question2Component {
+  protected empty = new Array(8);
+}

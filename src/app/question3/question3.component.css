@@ -1,15 +1,17 @@
+:host {
+  --light-bg: #f6f6f7;
+  --light-highlight: #5b5b61;
+  --light-border: #aaa;
+  --dark-bg: #333;
+  --dark-highlight: #999;
+}
+
 nav,
 form {
   max-width: 30rem;
 }
 
 nav div {
-  --light-bg: #f6f6f7;
-  --light-highlight: #5b5b61;
-  --light-border: #aaa;
-  --dark-bg: #333;
-  --dark-highlight: #999;
-  -webkit-tap-highlight-color: transparent;
   display: grid;
   grid: 1fr / 16px auto 16px;
   align-items: center;
@@ -17,6 +19,7 @@ nav div {
   border-width: 1px 0;
   text-decoration: none;
   background: light-dark(var(--light-bg), var(--dark-bg));
+  -webkit-tap-highlight-color: transparent;
 
   &:first-child {
     border-radius: 0.25rem 0 0 0.25rem;
@@ -47,12 +50,16 @@ nav div {
     padding: 0 0.25rem 0 0.75rem;
     color: light-dark(var(--light-fg), var(--dark-fg));
   }
+  &:last-child span {
+    padding-right: 0.75rem;
+  }
 
   &.current {
     background: light-dark(var(--light-highlight), var(--dark-highlight));
-  }
-  &.current span {
-    color: light-dark(white, var(--light-fg));
+
+    span {
+      color: light-dark(white, var(--light-fg));
+    }
   }
   &.current:not(:first-child):before {
     border-left-color: light-dark(var(--light-highlight), var(--dark-highlight));
