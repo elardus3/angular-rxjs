@@ -75,10 +75,6 @@ on a desktop, and even moreso on mobile devices. See Question 3 in sample app.
 
 Clone repository from GitHub.
 
-```
-git clone https://github.com/elardus3/ng-rxjs.git
-```
-
 Open new terminal in IDE to install project dependencies.
 
 ```
